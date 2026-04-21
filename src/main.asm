@@ -142,7 +142,7 @@ increment_time:
 
 increment_seconds:
         incf    s_units, F
-        movlw   ':'
+        movlw   '9' + 1
         subwf   s_units, W
         btfss   STATUS, C
         return
@@ -161,7 +161,7 @@ increment_seconds:
 
 increment_minutes:
         incf    m_units, F
-        movlw   ':'
+        movlw   '9' + 1
         subwf   m_units, W
         btfss   STATUS, C
         return
@@ -196,7 +196,7 @@ increment_hours:
         return
 
 hours_lt_20:
-        movlw   ':'
+        movlw   '9' + 1
         subwf   h_units, W
         btfss   STATUS, C
         return
