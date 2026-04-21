@@ -84,12 +84,14 @@ setup_loop:
 
 wait_action:
         call    mode_pressed
+        xorlw   0x00
         btfss   STATUS, Z
         goto    check_next
         goto    main_loop
 
 check_next:
         call    next_pressed
+        xorlw   0x00
         btfss   STATUS, Z
         goto    check_up
         incf    setup_field, F
@@ -101,6 +103,7 @@ check_next:
 
 check_up:
         call    up_pressed
+        xorlw   0x00
         btfss   STATUS, Z
         goto    wait_action
 
@@ -321,7 +324,7 @@ mode_pressed:
 mode_wait_release:
         btfss   PORTA, 0
         goto    mode_wait_release
-        clrf    tmp0
+        movlw   0x00
         return
 
 next_pressed:
@@ -334,7 +337,7 @@ next_pressed:
 next_wait_release:
         btfss   PORTA, 1
         goto    next_wait_release
-        clrf    tmp0
+        movlw   0x00
         return
 
 up_pressed:
@@ -347,13 +350,11 @@ up_pressed:
 up_wait_release:
         btfss   PORTA, 2
         goto    up_wait_release
-        clrf    tmp0
+        movlw   0x00
         return
 
 button_not_pressed:
         movlw   0x01
-        movwf   tmp0
-        movf    tmp0, W
         return
 
 delay_1s_or_mode:
@@ -373,6 +374,7 @@ delay_1s_loop:
 
 mode_detected:
         call    mode_pressed
+        xorlw   0x00
         btfss   STATUS, Z
         return
         movlw   0x01
@@ -390,55 +392,40 @@ _delay20_loop:
         return
 
 delay_5ms:
-        movlw   d'50'
+        movlw   d'5'
         movwf   cnt1
 _d5_1:
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
+        call    delay_1ms
         decfsz  cnt1, F
         goto    _d5_1
         return
 
 delay_2ms:
-        movlw   d'20'
+        movlw   d'2'
         movwf   cnt1
 _d2_1:
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
-        nop
+        call    delay_1ms
         decfsz  cnt1, F
         goto    _d2_1
         return
 
 delay_10ms:
-        movlw   d'25'
+        movlw   d'10'
         movwf   cnt1
 _d10_outer:
-        movlw   d'200'
+        call    delay_1ms
+        decfsz  cnt1, F
+        goto    _d10_outer
+        return
+
+delay_1ms:
+        movlw   d'199'
         movwf   tmp0
-_d10_inner:
-        nop
+_d1_1:
         nop
         nop
         decfsz  tmp0, F
-        goto    _d10_inner
-        decfsz  cnt1, F
-        goto    _d10_outer
+        goto    _d1_1
         return
 
         END
